@@ -17,9 +17,3 @@ server <--(json)-- browser
 browser --(HTTP GET https://studies.cs.helsinki.fi/exampleapp/favicon.ico)--> server
 
 server <--(favicon)-- browser
-
-(user writes a new note and clicks submit)
-
-browser --(HTTP POST new_note_spa: {"content":"test","date":"2022-06-26T10:15:23.537Z"})--> server
-
-server <--(Response 201 application/json)-- browser
