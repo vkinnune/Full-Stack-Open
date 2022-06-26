@@ -1,11 +1,7 @@
-browser --(HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes)--> server
+(Page is loaded)
 
-browser <--(HTML-code)-- server
+(user writes the note on the form and clicks submit)
 
-browser --(HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css)--> server
+browser --(HTTP POST form data: {note "yo"})--> server
 
-browser <--(main.css)-- server
-
-browser --(HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js)--> server
-
-browser <--(main.js)-- server
+browser <--(Redirect STATUS 302 location: /exampleapp/notes)-- server
