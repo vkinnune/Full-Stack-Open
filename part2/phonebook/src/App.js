@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-const	Render = ( { name } ) => {
+const	Name = ( { name } ) => {
 	return (
 		<p>{name}</p>
 	)
@@ -8,16 +8,14 @@ const	Render = ( { name } ) => {
 
 const	Numbers = ( { persons } ) => {
 	return (
-		<div>
-		{persons.map(person => <Render name={person.content} />)}
-		</div>
+		<>
+		{persons.map(person => <Name name={person.content} key={person.id} />)}
+		</>
 	)
 }
 
 const App = () => {
-	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas' }
-	])
+	const [persons, setPersons] = useState([])
 	const [newName, setNewName] = useState('')
 	const handleName = (event) => {
 		console.log(event.target.value)
@@ -51,7 +49,6 @@ const App = () => {
 	</form>
 	<h2>Numbers</h2>
 	  <Numbers persons={persons}/>
-	<div>debug: {newName}</div>
     </div>
   )
 }
