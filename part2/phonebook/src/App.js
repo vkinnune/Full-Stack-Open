@@ -2,16 +2,31 @@ import axios from 'axios'
 import { useState, useEffect } from "react";
 const baseUrl = "http://localhost:3001/persons";
 
-const	Name = ( { name, number } ) => {
+const deleteNumber = ( { id, name, setPersons, persons }) => {
+	if (window.confirm(`Delete ${name} ?`))
+	{
+		console.log(id)
+		axios.delete(`${baseUrl}/${id}`)
+		let tmpArr = persons.filter((elem) => {
+			return elem.id !== id;
+		});
+		setPersons(tmpArr)
+	}
+}
+
+const	Name = ( { name, number, id, setPersons, persons } ) => {
 	return (
+		<>
 		<p>{name} {number}</p>
+		<button type="delete" onClick={ () => deleteNumber({id, name, setPersons, persons})} >delete</button>
+		</>
 	)
 }
 
-const	Numbers = ( { persons } ) => {
+const	Numbers = ( { persons, setPersons } ) => {
 	return (
 		<>
-		{persons.map(person => <Name name={person.name} number={person.number} key={person.id} />)}
+		{persons.map(person => <Name name={person.name} number={person.number} id={person.id} key={person.id} persons={persons} setPersons={setPersons} />)}
 		</>
 	)
 }
@@ -40,7 +55,7 @@ const App = () => {
 	}, [])
 	const addName = (event) => {
 		event.preventDefault()
-		let filteredarray = persons.filter(person => newName === person.content)
+		let filteredarray = persons.filter(person => newName === person.name)
 		if (!filteredarray.length)
 		{
 			const nameObject = {
@@ -79,7 +94,7 @@ const App = () => {
 	</div>
 	</form>
 	<h2>Numbers</h2>
-	  <Numbers persons={persons}/>
+	  <Numbers persons={persons} setPersons={setPersons}/>
     </div>
   )
 }
