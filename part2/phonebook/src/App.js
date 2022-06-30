@@ -1,4 +1,6 @@
-import { useState } from "react";
+import axios from 'axios'
+import { useState, useEffect } from "react";
+const baseUrl = "http://localhost:3001/persons";
 
 const	Name = ( { name, number } ) => {
 	return (
@@ -9,7 +11,7 @@ const	Name = ( { name, number } ) => {
 const	Numbers = ( { persons } ) => {
 	return (
 		<>
-		{persons.map(person => <Name name={person.content} number={person.number} key={person.id} />)}
+		{persons.map(person => <Name name={person.name} number={person.number} key={person.id} />)}
 		</>
 	)
 }
@@ -21,20 +23,33 @@ const App = () => {
 	const handleName = (event) => {
 		setNewName(event.target.value)
 	}
+	const AddToServer = (newObj) => {
+	  return axios.post(baseUrl, newObj);
+	}
 	const handleNumber = (event) => {
 		setNewNumber(event.target.value)
 	}
+	useEffect(() => {
+	  console.log('effect')
+	  axios
+	    .get('http://localhost:3001/persons')
+	    .then(response => {
+	      console.log('promise fulfilled')
+	      setPersons(response.data)
+	    })
+	}, [])
 	const addName = (event) => {
 		event.preventDefault()
 		let filteredarray = persons.filter(person => newName === person.content)
 		if (!filteredarray.length)
 		{
 			const nameObject = {
-				content: newName,
+				name: newName,
 				date: new Date().toISOString(),
 				id: persons.length + 1,
 				number: newNumber,
 			}
+			AddToServer(nameObject)
 			setPersons(persons.concat(nameObject))
 			setNewName('')
 			setNewNumber('')
