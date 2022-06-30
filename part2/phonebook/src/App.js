@@ -1,15 +1,15 @@
 import { useState } from "react";
 
-const	Name = ( { name } ) => {
+const	Name = ( { name, number } ) => {
 	return (
-		<p>{name}</p>
+		<p>{name} {number}</p>
 	)
 }
 
 const	Numbers = ( { persons } ) => {
 	return (
 		<>
-		{persons.map(person => <Name name={person.content} key={person.id} />)}
+		{persons.map(person => <Name name={person.content} number={person.number} key={person.id} />)}
 		</>
 	)
 }
@@ -17,20 +17,30 @@ const	Numbers = ( { persons } ) => {
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newName, setNewName] = useState('')
+	const [newNumber, setNewNumber] = useState('')
 	const handleName = (event) => {
-		console.log(event.target.value)
 		setNewName(event.target.value)
+	}
+	const handleNumber = (event) => {
+		setNewNumber(event.target.value)
 	}
 	const addName = (event) => {
 		event.preventDefault()
-		const nameObject = {
-			content: newName,
-			date: new Date().toISOString(),
-			id: persons.length + 1,
+		let filteredarray = persons.filter(person => newName === person.content)
+		if (!filteredarray.length)
+		{
+			const nameObject = {
+				content: newName,
+				date: new Date().toISOString(),
+				id: persons.length + 1,
+				number: newNumber,
+			}
+			setPersons(persons.concat(nameObject))
+			setNewName('')
+			setNewNumber('')
 		}
-		setPersons(persons.concat(nameObject))
-		setNewName('')
-		console.log('button clicked', event.target)
+		else
+			window.alert(`${newName} is already added to phonebook`)
 	}
 
   return (
@@ -41,6 +51,12 @@ const App = () => {
 		name: <input
 	  	value={newName}
 	  	onChange={handleName}
+	  />
+	</div>
+        <div>
+		number: <input
+	  	value={newNumber}
+	  	onChange={handleNumber}
 	  />
 	</div>
         <div>
