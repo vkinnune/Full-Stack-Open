@@ -2,13 +2,30 @@ import axios from 'axios'
 import { useState, useEffect } from "react";
 const baseUrl = "http://localhost:3001/persons";
 
+const Notification = ({ message, setMessage }) => {
+  if (message !== null) {
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+
+  return (
+    <div className='error'>
+      {message}
+    </div>
+  )
+  } else
+	return (
+		<>
+		</>
+	)
+}
+
 const deleteNumber = ( { id, name, setPersons, persons }) => {
 	if (window.confirm(`Delete ${name} ?`))
 	{
-		console.log(id)
 		axios.delete(`${baseUrl}/${id}`)
 		let tmpArr = persons.filter((elem) => {
-			return elem.id !== id;
+			return elem.id !== id
 		});
 		setPersons(tmpArr)
 	}
@@ -16,10 +33,10 @@ const deleteNumber = ( { id, name, setPersons, persons }) => {
 
 const	Name = ( { name, number, id, setPersons, persons } ) => {
 	return (
-		<>
-		<p>{name} {number}</p>
+		<div>
+		{name} {number}
 		<button type="delete" onClick={ () => deleteNumber({id, name, setPersons, persons})} >delete</button>
-		</>
+		</div>
 	)
 }
 
@@ -32,6 +49,8 @@ const	Numbers = ( { persons, setPersons } ) => {
 }
 
 const App = () => {
+	const [message, setMessage] = useState(null);
+	const [errMsg, setErrMsg] = useState(0);
 	const [persons, setPersons] = useState([])
 	const [newName, setNewName] = useState('')
 	const [newNumber, setNewNumber] = useState('')
@@ -45,11 +64,9 @@ const App = () => {
 		setNewNumber(event.target.value)
 	}
 	useEffect(() => {
-	  console.log('effect')
 	  axios
 	    .get('http://localhost:3001/persons')
 	    .then(response => {
-	      console.log('promise fulfilled')
 	      setPersons(response.data)
 	    })
 	}, [])
@@ -58,6 +75,7 @@ const App = () => {
 		let filteredarray = persons.filter(person => newName === person.name)
 		if (!filteredarray.length)
 		{
+			setMessage(`${newName} number has been added`)
 			const nameObject = {
 				name: newName,
 				date: new Date().toISOString(),
@@ -70,32 +88,36 @@ const App = () => {
 			setNewNumber('')
 		}
 		else
-			window.alert(`${newName} is already added to phonebook`)
+		{
+			setErrMsg(1)
+			setMessage(`${newName} already existed`)
+		}
 	}
 
   return (
-    <div>
-      <h2>Phonebook</h2>
-      <form>
-        <div>
+	  <div>
+	  <Notification message={message} setMessage={setMessage} errMsg={errMsg} />
+	  <h1>Phonebook</h1>
+	  <form>
+	  <div>
 		name: <input
 	  	value={newName}
 	  	onChange={handleName}
 	  />
-	</div>
-        <div>
+	  </div>
+	  <div>
 		number: <input
 	  	value={newNumber}
 	  	onChange={handleNumber}
 	  />
-	</div>
-        <div>
+	  </div>
+	  <div>
 		<button type="submit" onClick={addName} >add</button>
-	</div>
-	</form>
-	<h2>Numbers</h2>
+	  </div>
+	  </form>
+	  <h2>Numbers</h2>
 	  <Numbers persons={persons} setPersons={setPersons}/>
-    </div>
+	  </div>
   )
 }
 
